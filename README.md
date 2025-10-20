@@ -13,6 +13,8 @@ Open your terminal or command prompt and connect to your PostgreSQL server:
 ```bash
 psql -U your_username -d postgres
 ```
+your_username can be anyone you decide to use, in my own case I used `postgres`.
+
 Enter your password when prompted.
 
 ### Step 2: Create a New Database
@@ -31,7 +33,7 @@ List all databases to confirm the new one exists:
 \q
 ```
 
-### Step 5: Run SQL 01_schema.sql and 02_seed_data.sql Scripts to create and populate tables respectively
+### Step 5: Run SQL `01_schema.sql` and `02_seed_data.sql` Scripts to create and the database populate tables respectively
 From your terminal, run:
 ```bash
 psql -U postgres -d launch_mart_loyalty_analytics_db -f C:/Users/USER/Documents/de-launchpad/launch_mart_loyalty_analytics/01_schema.sql
