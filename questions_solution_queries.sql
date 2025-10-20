@@ -1,5 +1,7 @@
 
+--------------------------------------------------------------------------------
 -- 1. Count the total number of customers who joined in 2023.
+--------------------------------------------------------------------------------
 SELECT
 	COUNT(*) AS customers_joined_2023
 FROM 
@@ -7,8 +9,9 @@ FROM
 WHERE 
 	join_date BETWEEN '2023-01-01' AND '2023-12-31';
 
-
+------------------------------------------------------------------------------------------------------------------------
 -- 2. For each customer return customer_id, full_name, total_revenue (sum of total_amount from orders). Sort descending.
+------------------------------------------------------------------------------------------------------------------------
 
 WITH customer_total_amount_spent AS (
 	SELECT
@@ -31,9 +34,9 @@ FROM
 ORDER BY 
 	total_revenue DESC;
 
-
-
+------------------------------------------------------------------
 -- 3) Return the top 5 customers by total_revenue with their rank.
+------------------------------------------------------------------
 
 WITH customer_revenue AS (
 	SELECT
@@ -68,8 +71,9 @@ WHERE
 ORDER BY 
 	total_revenue DESC;
 
-
+------------------------------------------------------------------------------------------------------
 -- 4) Produce a table with year, month, monthly_revenue for all months in 2023 ordered chronologically.
+------------------------------------------------------------------------------------------------------
 
 WITH calendar_year AS (
   	SELECT 
@@ -87,11 +91,14 @@ GROUP BY
 ORDER BY 
 	cy.month_starts;
 
+------------------------------------------------------------------------------------
+
 /*
  * 5) Find customers with no orders in the last 60 days relative to 2023-12-31 
  * (i.e., consider last active date up to 2023-12-31). 
  * Return customer_id, full_name, last_order_date.
 */
+------------------------------------------------------------------------------------
 
 WITH customer_last_order AS (
   	SELECT
@@ -115,11 +122,12 @@ WHERE
 	last_order_date <= '2023-12-31'::date - INTERVAL '60 day'
 ORDER BY last_order_date;
 
-
+-----------------------------------------------------------------------------------------------
 /*
  * 6) Calculate average order value (AOV) 
  * for each customer: return customer_id, full_name, aov (average total_amount of their orders). 
  * Exclude customers with no orders.*/
+------------------------------------------------------------------------------------------------
 
 WITH customer_average_order_value AS (
   	SELECT
@@ -145,11 +153,12 @@ WHERE
 ORDER BY
 	aov DESC;
 
-
+---------------------------------------------------------------------------------------
 /*
  * 7) For all customers who have at least one order, compute customer_id, full_name, 
  * total_revenue, spend_rank where spend_rank is a dense rank, highest spender = rank 1. 
  * */
+---------------------------------------------------------------------------------------
 
 WITH customer_total_revenue AS (
 	SELECT
@@ -173,10 +182,12 @@ FROM
 ORDER BY 
 	spend_rank;
 
+-----------------------------------------------------------------------
 /*
  * 8) List customers who placed more than 1 order and show customer_id, 
  * full_name, order_count, first_order_date, last_order_date.
  * */
+-----------------------------------------------------------------------
 
 WITH customer_orders_count AS (
 	SELECT
@@ -196,8 +207,9 @@ SELECT customer_id, full_name, orders_count, first_order_date, last_order_date
 FROM customer_orders_count 
 WHERE orders_count > 1;
 
-
+---------------------------------------------------------------------------------
 -- 9) Compute total loyalty points per customer. Include customers with 0 points.
+---------------------------------------------------------------------------------
 
 WITH total_loyalty_points_per_customer AS (
 	SELECT
@@ -217,7 +229,9 @@ FROM total_loyalty_points_per_customer
 WHERE total_points >= 0
 ORDER BY total_points DESC;
 
+-----------------------------------------------------------------------
 -- 10) Loyalty tier assignment, tier counts and total points per tier
+-----------------------------------------------------------------------
 
 WITH customer_points AS (
   	SELECT
@@ -254,8 +268,10 @@ GROUP BY
 ORDER BY
   -- order tiers from highest to lowest (Gold, Silver, Bronze)
   	CASE tier WHEN 'Gold' THEN 1 WHEN 'Silver' THEN 2 WHEN 'Bronze' THEN 3 END;
- 
+  
+ -------------------------------------------------------------------------------------------------
  -- 11) Identify customers who spent more than ₦50,000 total but have less than 200 loyalty points
+ -------------------------------------------------------------------------------------------------
   
 WITH customer_total_spend_and_total_points AS (
 	SELECT
@@ -284,13 +300,14 @@ FROM
 WHERE 
 	total_spent > 50000 AND total_points < 200;
 
-
+---------------------------------------------------------------------------------------------------
 /* 
  * 12)
  * Flag customers as churn_risk if they have no orders in the last 90 days (relative to 2023-12-31) 
  * AND are in the Bronze tier. 
  * Return customer_id, full_name, last_order_date, total_points.
  * */
+---------------------------------------------------------------------------------------------------
 
 WITH customer_last_order_date AS (
 	SELECT
@@ -328,7 +345,7 @@ WHERE
  	)
 ORDER BY total_points ASC, last_order_date NULLS FIRST;
 
-
+------------------------------------------------------------------------------------------------------------
 
 
 
